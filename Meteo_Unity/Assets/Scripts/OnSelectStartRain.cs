@@ -1,38 +1,32 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable))]
-public class OnSelectStartRain : MonoBehaviour
+[RequireComponent(typeof(Collider))]
+public class CityOrb : MonoBehaviour
 {
-    public bool stopOnDeselect = true;
-    public float fadeTime = 1.0f;
+    public WeatherType targetWeather = WeatherType.Rain;
+    public bool toggleMode = true; // si true -> ToggleWeather(targetWeather), sinon SetWeather
 
-    UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactable;
-
-    void Awake()
+    // Méthode publique exposée dans l'Inspector pour être appelée par l'event Activated
+    public void OnActivated()
     {
-        interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
+        if (WeatherManager.Instance == null)
+        {
+            Debug.LogWarning("[CityOrb] WeatherManager missing.");
+            return;
+        }
+
+        if (toggleMode)
+        {
+            WeatherManager.Instance.ToggleWeather(targetWeather);
+            Debug.Log($"[CityOrb] Toggle request: {targetWeather}");
+        }
+        else
+        {
+            WeatherManager.Instance.SetWeather(targetWeather);
+            Debug.Log($"[CityOrb] Set request: {targetWeather}");
+        }
     }
 
-    void OnEnable()
-    {
-        interactable.selectEntered.AddListener(HandleSelectEntered);
-        if (stopOnDeselect) interactable.selectExited.AddListener(HandleSelectExited);
-    }
-
-    void OnDisable()
-    {
-        interactable.selectEntered.RemoveListener(HandleSelectEntered);
-        if (stopOnDeselect) interactable.selectExited.RemoveListener(HandleSelectExited);
-    }
-
-    void HandleSelectEntered(SelectEnterEventArgs args)
-    {
-        if (WeatherManager.Instance != null) WeatherManager.Instance.StartRain(fadeTime);
-    }
-
-    void HandleSelectExited(SelectExitEventArgs args)
-    {
-        if (WeatherManager.Instance != null) WeatherManager.Instance.StopRain(fadeTime);
-    }
+    // Option: méthode non-paramétrée pour l'Inspector Events
+    public void OnActivated_SetRain() => OnActivated();
 }
