@@ -1,32 +1,28 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class CityOrb : MonoBehaviour
 {
-    public WeatherType targetWeather = WeatherType.Rain;
-    public bool toggleMode = true; // si true -> ToggleWeather(targetWeather), sinon SetWeather
+    public WeatherType weatherForThisOrb;
 
-    // Méthode publique exposée dans l'Inspector pour être appelée par l'event Activated
-    public void OnActivated()
+    public void OnActivatedInspector()
     {
         if (WeatherManager.Instance == null)
         {
-            Debug.LogWarning("[CityOrb] WeatherManager missing.");
+            Debug.Log("WeatherManager not found!");
             return;
         }
 
-        if (toggleMode)
+        WeatherType current = WeatherManager.Instance.GetCurrentWeather();
+
+        if (current == weatherForThisOrb)
         {
-            WeatherManager.Instance.ToggleWeather(targetWeather);
-            Debug.Log($"[CityOrb] Toggle request: {targetWeather}");
+            // si la météo actuelle est celle de l'orbe → on revient au beau temps
+            WeatherManager.Instance.SetWeather(WeatherType.Clear);
         }
         else
         {
-            WeatherManager.Instance.SetWeather(targetWeather);
-            Debug.Log($"[CityOrb] Set request: {targetWeather}");
+            // sinon on applique la météo de l'orbe
+            WeatherManager.Instance.SetWeather(weatherForThisOrb);
         }
     }
-
-    // Option: méthode non-paramétrée pour l'Inspector Events
-    public void OnActivated_SetRain() => OnActivated();
 }
