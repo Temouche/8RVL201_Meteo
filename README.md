@@ -1,5 +1,4 @@
 # 8RVL201_Meteo
-Projet fil rouge par deux
 
 ## Types de déplacement :
 Classique, Téléportation (flèche du contrôleur droit)
