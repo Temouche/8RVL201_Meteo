@@ -46,7 +46,7 @@ public class WeatherManager : MonoBehaviour
     public float lightClearIntensity = 1.0f;
     public float lightRainIntensity = 0.2f;
     public float lightSnowIntensity = 0.7f;
-    public Color lightClearColor =  new Color(1f, 0f, 0f, 1f);
+    public Color lightClearColor = new Color(0.96f, 0.79f, 0.54f, 1f);
     public Color lightOvercastColor = new Color(0.8f, 0.85f, 1f);
 
     [Header("Transition settings")]
